@@ -40,14 +40,16 @@
 import AppFooter from '../components/AppFooter.vue';
 import AppHeader from '../components/AppHeader.vue';
 import AppSider from '../components/AppSider.vue';
+import {downloadingTorrents} from '../main';
 export default {
     components: { AppHeader, AppSider, AppFooter},
     data(){
         return{
           cur: 0,
           download_num: 4,
+          downloading: [],
           download_file_record:[
-           {
+                {
                     filename:"高等计算机网络项目3",
                     course:"高等计算机网络",
                     teacher:"",

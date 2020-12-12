@@ -9,9 +9,13 @@
             <div v-show="cur==0" class="chooseup">
                 <el-upload
                     class="upload-demo"
-                    drag = "true"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :file-list="filelist"
+                    drag
+                    action
+                    :file-list="fileList"
+                    :auto-upload="false"
+                    :before-remove="beforeRemove"
+                    :on-change="onChange"
+                    :limit="1"
                     multiple>
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -49,12 +53,15 @@
 import AppFooter from '../components/AppFooter.vue';
 import AppHeader from '../components/AppHeader.vue';
 import AppSider from '../components/AppSider.vue';
+import {client} from '../main'
 export default {
     components: { AppHeader, AppSider, AppFooter},
     data(){
         return{
           cur: 0,
           upload_num: 9,
+          fileList: [],
+          file: undefined,
           upload_file_record:[
             {
                     filename:"组合数学2020期末A1",
@@ -101,8 +108,23 @@ export default {
         uploadrecord(){
             this.cur = 1;
         },
+        beforeRemove(file, fileList){
+            return this.$confirm(`确定移除 ${ file.name }？`);
+        },
+        onChange(file, fileList){
+            console.log(`Upload file ${ file.name} `);
+            this.file = file;
+        },
+        submitUpload(){
+            //console.log(client);
+            //console.log(this.file);
+            client.seed(this.file.raw, function (torrent) {
+                console.log('Client is seeding ' + torrent.magnetURI)
+            });
+        }
     },
     created(){
+        //this.client = new WebTorrent();
     },
     mounted(){
     }

@@ -32,7 +32,7 @@
               <span>上传时间:{{item.uploadtime}} &nbsp;&nbsp;&nbsp;&nbsp;</span>
               <span>文件大小:{{toFilesize(item.filesize)}} &nbsp;&nbsp;&nbsp;&nbsp;</span>
               <span>文件格式:{{item.fileformat}}</span>
-              <el-button class="button1" type="text"><i class="el-icon-download"></i>下载</el-button>
+              <el-button class="button1" type="text" :click="download(item)"><i class="el-icon-download"></i>下载</el-button>
             </div>
           </el-card>
         </div>
@@ -54,6 +54,8 @@
 import AppFooter from '../components/AppFooter.vue';
 import AppHeader from '../components/AppHeader.vue';
 import AppSider from '../components/AppSider.vue';
+import {client} from '../main';
+import {downloadingTorrents} from '../main';
 export default {
   components: { AppHeader, AppSider, AppFooter},
     data(){
@@ -119,8 +121,20 @@ export default {
             }
           }
           return this.format(value, i - 1);
+        },
+        download: function(item){
+          console.log(`Start to download file {item.filename}`);
+          let torrent = client.add(item.magnetURI, this.onTorrent(torrent));
+          downloadingTorrents.append(torrent);
+        },
+        onTorrent: function(torrent) {
+          console.log('Got torrent metadata!');
+          console.log(
+              'Torrent info hash: ' + torrent.infoHash + ' ' +
+              '<a href="' + torrent.magnetURI + '" target="_blank">[Magnet URI]</a> ' +
+              '<a href="' + torrent.torrentFileBlobURL + '" target="_blank" download="' + torrent.name + '.torrent">[Download .torrent]</a>'
+          );
         }
-
     },
     created(){
       let q = this.$route.query;
