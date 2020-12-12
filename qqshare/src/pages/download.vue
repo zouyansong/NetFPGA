@@ -2,7 +2,7 @@
     <div class="demo-home">
         <el-menu id = "sider" class="el-menu-demo" default-active="1" text-color="black"
          active-text-color="#409eff" style="padding:5px;padding-top:0px" mode="horizontal">
-            <el-menu-item index="1" class="title" @click="downloadnow()"><i class="el-icon-plus"></i>正在下载</el-menu-item>
+            <el-menu-item index="1" class="title" @click="downloadnow()"><i class="el-icon-download"></i>正在下载</el-menu-item>
             <el-menu-item index="2" class="title" @click="downloadrecord()"><i class="el-icon-success"></i>下载记录</el-menu-item>
         </el-menu>
         <div class="tab-content">
