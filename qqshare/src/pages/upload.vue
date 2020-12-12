@@ -112,7 +112,7 @@ export default {
             return this.$confirm(`确定移除 ${ file.name }？`);
         },
         onChange(file, fileList){
-            console.log(`Upload file ${ file.name} `);
+            console.log(`Upload file ${ file.name } `);
             this.file = file;
         },
         submitUpload(){

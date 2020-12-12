@@ -32,7 +32,7 @@
               <span>上传时间:{{item.uploadtime}} &nbsp;&nbsp;&nbsp;&nbsp;</span>
               <span>文件大小:{{toFilesize(item.filesize)}} &nbsp;&nbsp;&nbsp;&nbsp;</span>
               <span>文件格式:{{item.fileformat}}</span>
-              <el-button class="button1" type="text" :click="download(item)"><i class="el-icon-download"></i>下载</el-button>
+              <el-button class="button1" type="text" @click="download(item)"><i class="el-icon-download"></i>下载</el-button>
             </div>
           </el-card>
         </div>
@@ -123,9 +123,10 @@ export default {
           return this.format(value, i - 1);
         },
         download: function(item){
-          console.log(`Start to download file {item.filename}`);
-          let torrent = client.add(item.magnetURI, this.onTorrent(torrent));
-          downloadingTorrents.append(torrent);
+          console.log(`Start to download file ${item.filename} `);
+          console.log(item.magnetURI);
+          let torrent = client.add(item.magnetURI, this.onTorrent);
+          downloadingTorrents.push(torrent);
         },
         onTorrent: function(torrent) {
           console.log('Got torrent metadata!');
@@ -156,6 +157,8 @@ export default {
                     filesize:13*1024,
                     uploadtime: "2020-12-10",
                     fileformat: ".docx",
+                    magnetURI: "magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent",
+
                 },
                 {
                     filename:"组合数学2017期末A2我觉得很无聊",
