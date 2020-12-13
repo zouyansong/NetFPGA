@@ -126,6 +126,7 @@ export default {
           console.log(`Start to download file ${item.filename} `);
           console.log(item.magnetURI);
           let torrent = client.add(item.magnetURI, this.onTorrent);
+          console.log(torrent.path);
           downloadingTorrents.push(torrent);
         },
         onTorrent: function(torrent) {
@@ -249,7 +250,29 @@ export default {
                     filesize:11,
                     uploadtime: "2020-11-20",
                     fileformat: ".zip",
-                }
+                },
+                {
+                    filename:"深入浅出统计学",
+                    course:"统计学原理",
+                    teacher:"",
+                    downloadtime:40,
+                    filesize:11*1024*1024,
+                    uploadtime: "2020-11-26",
+                    fileformat: ".pdf",
+                    magnetURI: 'magnet:?xt=urn:btih:94092b324d99391e8ff6407368f4bfa6b1776670&dn=%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E7%BB%9F%E8%AE%A1%E5%AD%A6Head_First_Statistics.pdf&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com',
+
+                },
+                {
+                    filename:"TCP SECURITY",
+                    course:"高等计算机网络",
+                    teacher:"",
+                    downloadtime:15,
+                    filesize:11*1024*1024,
+                    uploadtime: "2020-11-26",
+                    fileformat: ".pptx",
+                    magnetURI: 'magnet:?xt=urn:btih:b8b803d71078e63dc70d37ac3e1af608ad362e0c&dn=TCP+SECURITY.pptx&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com',
+                    
+                },
             ]
         };
         let items = this.res.data;
