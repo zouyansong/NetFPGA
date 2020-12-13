@@ -18,7 +18,7 @@ export default {
             alert("shezhi");
         },
         safequit(){
-            this.$router.push('/login');
+            this.$router.replace('/login');
         }
     }
 }
@@ -29,24 +29,24 @@ export default {
         margin-right: 5%;
     }
     .el-row {
-    margin-bottom: 20px;
+    margin-bottom: 1.6%;
   }
   .el-col {
-    border-radius: 4px;
+    border-radius: 100%;
   }
   .grid-content1 {
-    border-radius: 4px;
+    border-radius: 100%;
     color:black;
     float: left;
     margin-left: 5%;
-    font-size: 24px;
+    font-size: 200%;
     font-weight: bold;
   }
   .grid-content2 {
-    border-radius: 4px;
+    border-radius: 100%;
     color:black;
     float: none;
-    font-size: 20px;
+    font-size: 180%;
     cursor:pointer;
   }
 </style>

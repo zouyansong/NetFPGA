@@ -15,12 +15,10 @@ export default {
   }
   .footer{
       position: relative;
-      bottom: 2%;
       width: 80%;
-      height: 4%;
       color: #c0c4cc;
       text-align:center;
-      font-size: 18px;
+      font-size: 90%;
       margin-left: 10%;
   }
 </style>

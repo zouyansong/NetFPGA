@@ -1,21 +1,21 @@
 <template>
     <div class="demo-home">
         <el-form :inline="true" :model="form" class="demo-form">
-            <el-form-item label="文件名" style="margin-right:30px">
+            <el-form-item label="文件名" style="margin-right:3%">
                 <el-input v-model="form.filename" placeholder="请输入文件名"></el-input>
             </el-form-item>
-            <el-form-item label="课程名" style="margin-right:30px">
+            <el-form-item label="课程名" style="margin-right:3%">
                 <el-input v-model="form.course" placeholder="请输入课程名"></el-input>
             </el-form-item>
-            <el-form-item label="教师名" style="margin-right:30px">
-                <el-input v-model="form.teacher" placeholder="请输入教师名"></el-input>
+            <el-form-item label="教师名" style="margin-right:3%">
+                <el-input style="width:210px" v-model="form.teacher" placeholder="请输入教师名"></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item style="margin-right:5%;float:auto">
                 <el-button type="primary" icon="el-icon-search" @click="onSubmit()">查询</el-button>
             </el-form-item>
         </el-form>
-        <div class='hot'><p style="font-weight: bold">热门推荐:</p>
-            <a v-for="file in filenames" v-bind:key="file" @click="search(file)">{{file}}&nbsp;&nbsp;&nbsp;</a>
+        <div class='hot'><p style="font-weight: bold;overflow-y:auto">热门推荐:</p>
+            <a class='hot-item' v-for="file in filenames" v-bind:key="file" @click="search(file)">{{file}}&nbsp;&nbsp;&nbsp;</a>
         </div>
     </div>
 </template>
@@ -37,7 +37,7 @@
     },
     methods: {
       onSubmit() {
-        console.log('submit!');
+        //console.log('submit!');
         this.$router.push({path:"/search",query:this.form});
       },
       search(f){
@@ -49,22 +49,26 @@
 
 <style scoped>
     .demo-home{
-      font-size: 20px;
-      margin-left: -10%;
-      align-content: flex-start;
+      font-size: 180%;
     }
     .demo-form{
-        margin-top: 100px;
-        height: 100px;
+        margin-top: 0.5rem;
+        margin-right: 10%;
+        overflow-y:auto;
     }
     .el-input{
         width: 300px;
     }
     .hot{
-        margin-left: 14%;
+        margin-left: 4%;
         text-align: left;
         margin-right: 14%;
         word-break: keep-all;
         word-wrap: break-word;
+    }
+    .hot-item:hover{
+        cursor: pointer;
+        text-decoration: underline;
+        color:#409eff;
     }
 </style>
