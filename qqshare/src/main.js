@@ -13,7 +13,8 @@ import 'lib-flexible'
 //Vue.use(VueAxios, axios)
 
 import WebTorrent from 'webtorrent'
-import SimplePeer from 'simple-peer'
+//import SimplePeer from 'simple-peer'
+import global_ from './components/AppGlobal'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
@@ -70,7 +71,7 @@ export var client = new WebTorrent({
     }
 })
 
-export var downloadingTorrents = []
+Vue.prototype.GLOBAL = global_
 
 /* eslint-disable no-new */
 new Vue({

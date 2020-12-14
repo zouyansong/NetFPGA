@@ -55,7 +55,7 @@ import AppFooter from '../components/AppFooter.vue';
 import AppHeader from '../components/AppHeader.vue';
 import AppSider from '../components/AppSider.vue';
 import {client} from '../main';
-import {downloadingTorrents} from '../main';
+//import {this.this.downTorrents} from '../main';
 export default {
   components: { AppHeader, AppSider, AppFooter},
     data(){
@@ -77,6 +77,7 @@ export default {
           data_show:[],//当前显示数据
           UNITS: ['B','KB','MB','GB','TB','PB','EB','ZB','YB'],
           STEP: 1024,
+          downTorrents: this.GLOBAL.downTorrents
         }
     },
     methods:{
@@ -126,9 +127,21 @@ export default {
         download: function(item){
           console.log(`Start to download file ${item.filename} `);
           console.log(item.magnetURI);
-          let torrent = client.add(item.magnetURI, this.onTorrent);
-          console.log(torrent.path);
-          downloadingTorrents.push(torrent);
+          let torrent = client.add(item.magnetURI, {path: 'D:/user/Downloads/'}, this.onTorrent);
+          console.log(torrent);
+          /*
+          this.downTorrents.push({
+            hash: torrent.infoHash,
+            name: torrent.name, 
+            path: torrent.path, 
+            progress: 0, 
+            numPeers: torrent.numPeers, 
+            downloadSpeed: torrent.downloadSpeed,
+            uploadSpeed: torrent.uploadSpeed,
+            remaining: torrent.timeRemaining
+          });
+          */
+          this.downTorrents.push(torrent);
         },
         onTorrent: function(torrent) {
           console.log('Got torrent metadata!');
@@ -137,6 +150,25 @@ export default {
               '<a href="' + torrent.magnetURI + '" target="_blank">[Magnet URI]</a> ' +
               '<a href="' + torrent.torrentFileBlobURL + '" target="_blank" download="' + torrent.name + '.torrent">[Download .torrent]</a>'
           );
+          let interval = setInterval(function (){
+            console.log('Downloading file: ' + torrent.name + ', Progress: ' + (torrent.progress * 100).toFixed(1) + '%');
+            /*
+            let tmp = this.downTorrents.filter(entry => entry.infoHash == torrent.infoHash)[0];
+            tmp.progress = (100 * torrent.progress).toFixed(1)
+            tmp.numPeers = torrent.numPeers;
+            tmp.downloadSpeed = torrent.downloadSpeed;
+            tmp.uploadSpeed = torrent.uploadSpeed;
+            */
+          }, 5000);
+
+          torrent.on('done', function () {
+            console.log(`Finish downloading ${torrent.name} `);
+            clearInterval(interval);
+            //let pos = this.downTorrents.indexOf(torrent);
+            //let tmp = this.downTorrents.filter(entry => entry.infoHash == torrent.infoHash)[0];
+            //let pos = this.downTorrents.indexOf(tmp);
+            //this.downTorrents.splice(pos, 1);
+          });
         }
     },
     created(){

@@ -8,6 +8,18 @@
         <div class="tab-content">
             <div v-show="cur==0" class="chooseup">
                <p>正在下载列表</p>
+               <div v-html="downloadInfo"></div>
+               <!--<ul>
+                   <li v-for="torrent in this.downloadingTorrents" :key="torrent.infoHash">
+                       <p>  
+                            Downloading {{ torrent.name }}, 
+                            Progress: {{ (100 * torrent.progress).toFixed(1) }}
+                            Download Speed: {{ torrent.downloadSpeed }}
+                            Upload Speed: {{ torrent.uploadSpeed }}
+                       </p>
+                    </li>
+                </ul>
+                -->
             </div>
             <div v-show="cur==1">
                 <p style="text-align:left;margin-left:3%">您共下载完成{{download_num}}个文件</p>
@@ -40,12 +52,14 @@
 import AppFooter from '../components/AppFooter.vue';
 import AppHeader from '../components/AppHeader.vue';
 import AppSider from '../components/AppSider.vue';
+//import {downloadingTorrents} from '../main';
 export default {
     components: { AppHeader, AppSider, AppFooter},
     data(){
         return{
           cur: 0,
           download_num: 4,
+          downTorrents: this.GLOBAL.downTorrents,
           download_file_record:[
            {
                     filename:"高等计算机网络项目3",
@@ -93,6 +107,22 @@ export default {
         downloadrecord(){
             this.cur = 1;
         },
+    },
+    computed:{
+        downloadInfo: function(){
+            let info =  '<div>您正在下载' + this.downTorrents.length + '个文件';
+            info += '<ul>';
+            for(let torrent of this.downTorrents){
+                info += '<li>';
+                info += 'Downloading ' + torrent.name + 
+                        ', Progress: ' + (100 * torrent.progress).toFixed(1) + 
+                        ', Download Speed: ' + torrent.downloadSpeed +
+                        ', Upload Speed: ' + torrent.uploadSpeed;
+                info += '</li>';
+            }
+            info += '</ul></div>';
+            return info;
+        }
     },
     created(){
     },
