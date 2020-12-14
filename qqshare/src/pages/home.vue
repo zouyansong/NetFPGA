@@ -1,10 +1,10 @@
 <template>
     <div class="user-home">
         <el-container>
-            <el-header><app-header/></el-header>
-            <el-container class="contentContainer">
+            <el-header class="header"><app-header/></el-header>
+            <el-container>
                 <app-sider/>
-                <el-main>
+                <el-main class="main">
                     <!--search/-->
                     <router-view/>
                 </el-main>
@@ -25,6 +25,7 @@ export default {
         }
     },
     methods:{
+
         
     },
     created(){
@@ -37,19 +38,20 @@ export default {
 <style scoped>
   .user-home{
       display: flex;
-      flex-direction: column;
-      height: 100%;
-      font-size: 20px;
-      margin-left: 10%;
-      min-height: 930px;
-  }
-  
-  .contentContainer {
-    width:100%;
-    height: 100%;
+      flex-direction: row;
+      font-size: 100%;
+      margin-left: 0.8rem;
+      width: 9rem;
+      min-height: 900px;
   }
 
-  .contentInner{
-      margin-left: 15%;
+  .header{
+      height: 1rem;
+      width: 8rem;
   }
+
+  .main{
+      width:7rem;
+  }
+
 </style>

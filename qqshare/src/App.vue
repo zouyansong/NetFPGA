@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="wrapper">
     <router-view></router-view>
   </div>
 </template>
@@ -21,4 +21,10 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+</style>
+
+<style scoped>
+  .wrapper div{
+    height: 1 rem;
+  }
 </style>

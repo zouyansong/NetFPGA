@@ -7,23 +7,46 @@
         </el-menu>
         <div class="tab-content">
             <div v-show="cur==0" class="chooseup">
-                <el-upload
-                    class="upload-demo"
-                    drag
-                    action
-                    :file-list="fileList"
-                    :auto-upload="false"
-                    :before-remove="beforeRemove"
-                    :on-change="onChange"
-                    :limit="1"
-                    multiple>
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                </el-upload>
-                <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+                <div class = 'left'>
+                    <el-upload
+                        class = "upload-demo"
+                        drag
+                        action
+                        :file-list = "fileList"
+                        :auto-upload = "false"
+                        :limit="1"
+                        :on-exceed="handleExceed"
+                        :on-progress="handleProcess"
+                        :on-success="handleSuccess"
+                        :on-error="handleError"
+                        :on-change="handleChange"
+                        :on-remove="handleRemove"
+                        :before-remove="beforeRemove"
+                        multiple>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                    </el-upload>
+                    <el-button style="margin-top:0.1rem"  type="success" @click="submitUpload">确认上传</el-button>
+                    <el-progress style="margin-top:0.1rem"  v-if="beginUpload == true" :text-inside="true" :stroke-width="18"
+                    :percentage="uploadPercent"></el-progress>
+                </div>
+                <div class='right'>
+                    <el-form :model="form">
+                        <el-form-item label= "课程名字">
+                            <el-input style="width:2.5rem" v-model="form.course" placeholder="必填"></el-input>
+                        </el-form-item>
+                        <el-form-item label = "授课老师">
+                            <el-input style="width:2.5rem" v-model="form.teacher" placeholder="必填"></el-input>
+                        </el-form-item>
+                        <el-form-item label = "其它描述">
+                            <el-input style="width:2.5rem" v-model="form.description" placeholder="选填，有关描述信息"></el-input>
+                        </el-form-item>
+                    </el-form>
+                </div>
             </div>
+            
             <div v-show="cur==1">
-                <p style="text-align:left;margin-left:3%">您共上传完成{{upload_num}}个文件</p>
+                <p style="text-align:left;margin-left:3%">您累计上传完成{{upload_num}}个文件</p>
                 <el-table
                     :data="upload_file_record"
                     stripe
@@ -59,9 +82,15 @@ export default {
     data(){
         return{
           cur: 0,
-          upload_num: 9,
-          fileList: [],
-          file: undefined,
+          fileList:[],
+          upload_num: 0,
+          beginUpload: false,
+          uploadPercent: 0,
+          form: {
+          course: '',
+          teacher: '',
+          description: ''
+          },
           upload_file_record:[
             {
                     filename:"组合数学2020期末A1",
@@ -108,23 +137,80 @@ export default {
         uploadrecord(){
             this.cur = 1;
         },
-        beforeRemove(file, fileList){
-            return this.$confirm(`确定移除 ${ file.name }？`);
+        beforeRemove(file,fileList){
+            return this.$confirm('确定移除'+file.name+'?');
         },
-        onChange(file, fileList){
-            console.log(`Upload file ${ file.name } `);
-            this.file = file;
+        handleExceed(file,fileList){
+            this.$message.warning("最多一次上传1个文件，请分多次上传");
+        },
+        handleSuccess(response, file, fileList){
+            console.log(response)
+            this.$message.success('文件[' + file.name + ']上传成功')
+        },
+        handleError(err, file, fileList){
+            console.log(err);
+            this.$message.error("文件上传失败")
+        },
+        handleRemove(file,fileList){
+            console.log(file)
+            this.fileList = []
+        },
+        handleChange(file,fileList){
+            if(file){
+                this.fileList = fileList.slice(-3);
+                console.log('Upload file '+ file.name);
+            }
+        },
+        handleProcess(event, file, fileList){
+            console.log("process bar")
+            this.beginUpload = true;
+            this.uploadPercent = file.percentage.toFixed(0);
+        },
+        uploadFile(param){
+            console.log(param.file.name)
+            const fileObj = param.file
+            const formData = new FormData()
+            formData.append('file',fileObj)
+            formData.append('filename',param.file.name)
+            formData.append('course',this.form.course)
+            formData.append('teacher',this.form.teacher)
+            formData.append('description',this.form.description)
+            console.log(formData.get('teacher'))
+            //请求后台上传数据
+            this.$http.post('',formData
+            ).then(res => {
+                console.log(res)
+                if(res.data.meta.status == '200'){
+                    this.$message.success(res.data.meta.msg)
+                    this.fileList = []
+                    this.form.teacher = ""
+                    this.form.course = ""
+                    this.form.description = ""
+                }else{
+                    this.$message.error(res.data.meta.msg)
+                }
+            },err => {
+                console.log(err)
+                this.$message.error("上传文件有问题，请检查重传")
+            })
+            //this.beginUpload = false//之后进度条真正使用的时候需要改回来
         },
         submitUpload(){
-            //console.log(client);
-            //console.log(this.file);
-            client.seed(this.file.raw, function (torrent) {
+            if(this.fileList.length == 0){ this.$message.warning("请选择一个文件")}
+            else if(this.form.course == ''){ this.$message.warning("请输入对应课程")}
+            else if(this.form.teacher == ''){ this.$message.warning("请输入授课教师")}
+            else{
+                //this.$refs.upload.submit()
+                //console.log(client);
+                //console.log(this.file);
+                client.seed(this.file.raw, function (torrent) {
                 console.log('Client is seeding ' + torrent.magnetURI)
             });
+            }
         }
     },
     created(){
-        //this.client = new WebTorrent();
+        this.upload_num = this.upload_file_record.length;
     },
     mounted(){
     }
@@ -167,6 +253,18 @@ export default {
         text-align: center;
     } */
     .chooseup{
-        margin-top: 10%;
+        margin-top: 5%;
+        margin-left: 5%;
+        width:5rem;
+    }
+    .left{
+        float: left;
+        width:2rem;
+        margin-right: 0;
+    }
+    .right{
+        float: right;
+        margin-left: 0;
+        width:3rem;
     }
 </style>

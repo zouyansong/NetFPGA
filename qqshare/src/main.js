@@ -4,14 +4,20 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
-import WebTorrent from 'webtorrent'
-import SimplePeer from 'simple-peer'
 
 import 'element-ui/lib/theme-chalk/index.css'
+import 'lib-flexible'
+//import axios from 'axios'
+//import VueAxios from 'vue-axios'
+//axios.defaults.baseURL = '/api'
+//Vue.use(VueAxios, axios)
+
+import WebTorrent from 'webtorrent'
+//import SimplePeer from 'simple-peer'
+import global_ from './components/AppGlobal'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
-
 
 /*var rtcConfig = {
     "iceServers": [
@@ -32,7 +38,6 @@ Vue.use(ElementUI)
         }
     ]
 }
-
 export var client = new WebTorrent({
     tracker: {
         rtcConfig: {
@@ -45,11 +50,11 @@ export var client = new WebTorrent({
 export var client = new WebTorrent({
     tracker: {
         rtcConfig: {
-            iceServers: [
-                {
+            iceServers: [{
                     urls: [
                         'stun:stun.l.google.com:19302',
-                        'stun:global.stun.twilio.com:3478']
+                        'stun:global.stun.twilio.com:3478'
+                    ]
                 },
                 {
                     urls: [
@@ -66,7 +71,7 @@ export var client = new WebTorrent({
     }
 })
 
-export var downloadingTorrents = []
+Vue.prototype.GLOBAL = global_
 
 /* eslint-disable no-new */
 new Vue({
