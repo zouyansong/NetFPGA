@@ -168,6 +168,18 @@ export default {
             //let tmp = this.downTorrents.filter(entry => entry.infoHash == torrent.infoHash)[0];
             //let pos = this.downTorrents.indexOf(tmp);
             //this.downTorrents.splice(pos, 1);
+
+            let file = torrent.files[0];//assume only one file per torrent
+            file.getBlobURL(function (err, url) {
+              if (err) return util.error(err)
+
+              let a = document.createElement('a');
+              a.target = '_blank';
+              a.download = file.name;
+              a.href = url;
+              a.textContent = 'Download ' + file.name;
+              a.click();
+            })
           });
         }
     },

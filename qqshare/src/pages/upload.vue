@@ -158,6 +158,7 @@ export default {
         handleChange(file,fileList){
             if(file){
                 this.fileList = fileList.slice(-3);
+                this.file = file;
                 console.log('Upload file '+ file.name);
             }
         },
@@ -204,8 +205,9 @@ export default {
                 //console.log(client);
                 //console.log(this.file);
                 client.seed(this.file.raw, function (torrent) {
-                console.log('Client is seeding ' + torrent.magnetURI)
-            });
+                    console.log('Client is seeding ' + torrent.magnetURI);
+                    //uploadFile(torrent);
+                });
             }
         }
     },
