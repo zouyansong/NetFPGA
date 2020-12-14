@@ -32,7 +32,7 @@ export default {
  .title {
     margin-top: 12%;
     margin-bottom: 12%;
-    font-size: 150%;
+    font-size: 0.1rem;
     text-align: center;
   }
 </style>

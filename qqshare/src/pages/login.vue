@@ -3,10 +3,10 @@
     <el-row>
       <el-col :lg="{span: 8, offset: 8}" :sm="24">
         <div class="loginForm">
-          <h3 class="title">{{ loginTitle }}</h3>
-          <el-form ref="form" :model="form">
+          <h1 class="title">{{ loginTitle }}</h1>
+          <el-form :model="form">
             <el-form-item>
-              <el-input v-model="form.phone" placeholder="请输入酒井ID"></el-input>
+              <el-input v-model="form.id" placeholder="请输入酒井ID"></el-input>
             </el-form-item>
             <el-form-item>
               <el-input v-model="form.pwd" type="password" placeholder="请输入密码"></el-input>
@@ -29,15 +29,47 @@
       return {
         loginTitle: '清清共享登录',
         form: {
-          name: '',
+          id: '',
           pwd: ''
         }
       }
     },
     methods: {
       login () {
-        console.log('login')
-        this.$router.push('/home')
+        const self = this
+        //console.log('login',typeof(self),typeof(this))
+        if(this.form.id == '' || this.form.pwd == '') {
+          this.$message.error("用户名或密码为空!!!")
+        }
+        else{
+          // console.log({
+          //     id: this.form.id,
+          //     pwd: this.form.pwd,
+          //   })
+          //   console.log(qs.stringify({
+          //     id: this.form.id,
+          //     pwd: this.form.pwd,
+          //   }))
+            this.axios.post('/uservalid',qs.stringify({
+              id: this.form.id,
+               pwd: this.form.pwd,
+             })
+           ).then(function (response){
+             let flag = response.data[0]['flag'];
+             if (flag == '1'){
+               //console.log(typeof(self));
+               self.GLOBAL.user_name = response.data[0]['name'];
+               self.$router.push('/home');
+             }
+             else if(flag == '2'){
+               self.$message.error("密码错误");
+             }
+             else{
+               self.$message.error("用户不存在");
+             }
+           })
+           .catch(function(error){console.log(error)});
+        }
       }
     }
   }

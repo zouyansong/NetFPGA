@@ -92,6 +92,7 @@ export default {
         },
         downloadrecord(){
             this.cur = 1;
+            
         },
     },
     created(){

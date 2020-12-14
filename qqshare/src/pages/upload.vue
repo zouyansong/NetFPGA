@@ -83,6 +83,7 @@ export default {
         return{
           cur: 0,
           fileList:[],
+          file:undefined,
           upload_num: 0,
           beginUpload: false,
           uploadPercent: 0,
@@ -157,8 +158,9 @@ export default {
         },
         handleChange(file,fileList){
             if(file){
-                this.fileList = fileList.slice(-3);
                 console.log('Upload file '+ file.name);
+                this.file = file.name;
+                this.fileList.append(file.name);
             }
         },
         handleProcess(event, file, fileList){
@@ -196,17 +198,47 @@ export default {
             //this.beginUpload = false//之后进度条真正使用的时候需要改回来
         },
         submitUpload(){
-            if(this.fileList.length == 0){ this.$message.warning("请选择一个文件")}
-            else if(this.form.course == ''){ this.$message.warning("请输入对应课程")}
-            else if(this.form.teacher == ''){ this.$message.warning("请输入授课教师")}
-            else{
-                //this.$refs.upload.submit()
-                //console.log(client);
-                //console.log(this.file);
-                client.seed(this.file.raw, function (torrent) {
-                console.log('Client is seeding ' + torrent.magnetURI)
-            });
-            }
+            //console.log(this.file)
+            //console.log(this.)
+            this.axios.post('/upload',qs.stringify({
+                    filename:'谁家弟子', 
+                    course:'dfgg', 
+                    teacher:'this.form.teacher',
+                    fileformat:'.docx',
+                    filesize:12323,
+                    filedescription:'this.form.description',
+                    magnetURL:"magnet:?xt=urn:btdfih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent",
+                })).then(function (response){
+                    console.log(response)
+                    })
+                .catch(function(error){console.log(error)});
+            //  if(this.fileList.length == 0){ this.$message.warning("请选择一个文件")}
+            //  else if(this.form.course == ''){ this.$message.warning("请输入对应课程")}
+            //  else if(this.form.teacher == ''){ this.$message.warning("请输入授课教师")}
+            //  else{
+            //      //this.$refs.upload.submit()
+            //      //console.log(client);
+            //      //console.log(this.file);
+            //      console.log(this.fileList[0].filename)
+            //      _flie = this.fileList[0].filename.split('.')
+            //      console.log(_file[0],_flie[1])
+            //      this.axios.post('/upload',qs.stringify({
+            //          filename:_file[0], 
+            //          course:this.form.cousre, 
+            //          teacher:this.form.teacher,
+            //          fileformat:'.'+_flie[1],
+            //          filesize:12323,
+            //          filedescription:this.form.description,
+            //          magnetURL:"magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent",
+            //      })).then(function (response){
+            //          console.log(response)
+            //          })
+            //      .catch(function(error){console.log(error)});
+
+                //client.seed(this.file.raw, function (torrent) {
+                //console.log('Client is seeding ' + torrent.magnetURI)
+            //});
+        //    }
         }
     },
     created(){
