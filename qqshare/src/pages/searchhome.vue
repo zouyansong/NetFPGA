@@ -15,7 +15,13 @@
             </el-form-item>
         </el-form>
         <div class='hot'><p style="font-weight: bold;overflow-y:auto">热门推荐:</p>
-            <a class='hot-item' v-for="file in filenames" v-bind:key="file" @click="search(file)">{{file}}&nbsp;&nbsp;&nbsp;</a>
+            <a class='hot-item' v-for="i in 10" v-bind:key="i"  @click="search(filenames[i-1])"
+            @mouseover="function(event){mouse(event,i)}" @mouseout="hover=-1">
+              &nbsp;&nbsp;{{filenames[i-1]}}&nbsp;&nbsp;</a>
+            <div>
+              <p></p>
+              <el-card v-if="hover>=0" style="z-index:999;color:#409eff">{{descriptions[hover-1]}}</el-card>
+            </div>
         </div>
     </div>
 </template>
@@ -23,11 +29,12 @@
   export default {
     data() {
       return {
-        filenames:[
-            "组合数学2019年期末", "微积分A2018年春期末","线性代数2018年秋",
-            "人工智能导论大作业","高等计算机网络课件","操作系统2020年期中A卷",
-            "离散数学A课件",'复变函数期末总结','数电A4小抄'
-        ],
+        x:0,
+        y:0,
+        hover:-1,
+        filenames:[],
+        descriptions:[],
+        //card_id:['card0','card1','card2','card3','card4','card5','card6','card7','card8','card9'],
         form: {
           filename: '',
           course: '',
@@ -40,10 +47,30 @@
         //console.log('submit!');
         this.$router.push({path:"/search",query:this.form});
       },
+      mouse(event,i){
+        this.hover = i;
+        this.x = event.offsetX;
+        this.y = event.offsetY;
+        //console.log(i,this.x,this.y);
+      },
       search(f){
-          alert("search file"+f);
+        //console.log('search'+f);
+        this.$router.push({path:"/search",query:{filename:f}});
       }
-    }
+    },
+    created(){
+      //向服务器请求热点文件
+      const self = this;
+      this.axios.get('/hotfile').then(function(response){
+        var l = response.data.length;
+        for(let _file of response.data){
+          self.filenames.push(_file['filename']);
+          self.descriptions.push(_file['description']);
+        }
+      }).catch(function(error){console.log(error)});
+      //console.log(this.filenames);
+      //console.log(this.descriptions);
+    },
   }
 </script>
 
@@ -52,7 +79,7 @@
       font-size: 180%;
     }
     .demo-form{
-        margin-top: 0.5rem;
+        margin-top: 96px;
         margin-right: 10%;
         overflow-y:auto;
     }
@@ -60,11 +87,14 @@
         width: 300px;
     }
     .hot{
+        margin-top: 5%;
         margin-left: 4%;
         text-align: left;
         margin-right: 14%;
         word-break: keep-all;
         word-wrap: break-word;
+        z-index: -1;
+        font-size: 100%;
     }
     .hot-item:hover{
         cursor: pointer;

@@ -7,7 +7,6 @@
         </el-menu>
         <div class="tab-content">
             <div v-show="cur==0" class="chooseup">
-               <p>正在下载列表</p>
                <div v-html="downloadInfo"></div>
                <!--<ul>
                    <li v-for="torrent in this.downloadingTorrents" :key="torrent.infoHash">
@@ -58,69 +57,44 @@ export default {
     data(){
         return{
           cur: 0,
-          download_num: 4,
-          downTorrents: this.GLOBAL.downTorrents,
-          download_file_record:[
-                {
-                    filename:"高等计算机网络项目3",
-                    course:"高等计算机网络",
-                    teacher:"",
-                    downloadtime:32,
-                    filesize:1.43*1024*1024,
-                    uploadtime: "2020-11-19",
-                    fileformat: ".pdf",
-                },
-                {
-                    filename:"高等计算机网络项目4",
-                    course:"",
-                    teacher:"徐恪",
-                    downloadtime:15,
-                    filesize:13*1024*1024*1024,
-                    uploadtime: "2018-11-18",
-                    fileformat: ".zip",
-                },
-                {
-                    filename:"高等计算机网络项目10",
-                    course:"",
-                    teacher:"徐恪",
-                    downloadtime:18,
-                    filesize:12*1024*1024,
-                    uploadtime: "2020-11-13",
-                    fileformat: ".zip",
-                },
-                {
-                    filename:"高等计算机网络报告",
-                    course:"",
-                    teacher:"徐恪",
-                    downloadtime:4,
-                    filesize:11,
-                    uploadtime: "2020-11-20",
-                    fileformat: ".zip",
-                },
-            ],
+          download_num: 0,
+          download_file_record:[],
+          downTorrents:this.GLOBAL.downTorrents,
         }
     },
     methods:{
         downloadnow(){
             this.cur = 0;
         },
-        downloadrecord(){
+        async downloadrecord(){
+            const self = this;
             this.cur = 1;
+            self.download_file_record = [];
+            await this.axios.get("/downloadrecord",{params:{id:this.GLOBAL.user_id}}).then(function (response){
+                //console.log(response)
+                self.download_num = response.data.length;
+                //console.log(response.data.length);
+                for(let _file of response.data){
+                  //console.log(_file,self.res);
+                  self.download_file_record.push(_file);
+                }
+              }).catch(function(error){console.log(error)});
         },
     },
     computed:{
         downloadInfo: function(){
-            let info =  '<div>您正在下载' + this.downTorrents.length + '个文件';
-            info += '<ul>';
+            let info =  '<div>您正在下载' + this.downTorrents.length + '个文件</div></br></br>';
+            //info += '<ul>';\
+            var index = 1;
             for(let torrent of this.downTorrents){
-                info += '<li>';
-                info += 'Downloading ' + torrent.name + 
-                        ', Progress: ' + (100 * torrent.progress).toFixed(1) + 
-                        ', Download Speed: ' + torrent.downloadSpeed +
-                        ', Upload Speed: ' + torrent.uploadSpeed;
-                info += '</li>';
+                info += '<el-card><div style="float:left;color:#409eff">' + index+ ".&nbsp;" + torrent.name + '</div>'
+                info += '</br><div style="float:left">'+'Progress: ' + (100 * torrent.progress).toFixed(1) + 
+                        '&nbsp;&nbsp;&nbsp;&nbsp;Download Speed: ' + torrent.downloadSpeed +
+                        '&nbsp;&nbsp;&nbsp;&nbsp;Upload Speed: ' + torrent.uploadSpeed +'</div>';
+                //info + '<el-progress :percentage="50"></el-progress>'
+                info += '</el-card></br></br>';
+                index += 1;
             }
-            info += '</ul></div>';
             return info;
         }
     },
@@ -167,6 +141,8 @@ export default {
         text-align: center;
     } */
     .chooseup{
-        margin-top: 10%;
+        float: left;
+        margin-left: 3%;
+        margin-top: 3%;
     }
 </style>
