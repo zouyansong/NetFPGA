@@ -108,12 +108,9 @@ export default {
               //console.log(t);
               this.res[parseInt(i)].show_info = t;
             }
+            this.page_size = 8;
             this.page_num = Math.ceil(this.len / this.page_size) ||  1;
-            console.log(this.page_num);
-            for (let i = 0; i < this.page_num; i++){
-              this.total_page[i] = this.res.slice(this.page_size*i, this.page_size*(i+1));
-            }
-            this.data_show = this.total_page[this.current_page];
+            this.sortby(0);
         },
         sortby(num){
           let key_l = ["downloadtime","uploadtime","filesize"];
@@ -160,6 +157,7 @@ export default {
         },
         download: function(item){
           console.log(`Start to download file ${item.filename} `);
+          this.$message.success("已将文件"+item.filename+"添加到下载列表");
           console.log(item.magnetURI);
           let torrent = client.add(item.magnetURI, {path: 'D:/user/Downloads/'}, this.onTorrent);
           console.log(torrent);

@@ -51,7 +51,7 @@
         this.hover = i;
         this.x = event.offsetX;
         this.y = event.offsetY;
-        console.log(i,this.x,this.y);
+        //console.log(i,this.x,this.y);
       },
       search(f){
         //console.log('search'+f);
@@ -79,7 +79,7 @@
       font-size: 180%;
     }
     .demo-form{
-        margin-top: 0.5rem;
+        margin-top: 96px;
         margin-right: 10%;
         overflow-y:auto;
     }
@@ -87,12 +87,14 @@
         width: 300px;
     }
     .hot{
+        margin-top: 5%;
         margin-left: 4%;
         text-align: left;
         margin-right: 14%;
         word-break: keep-all;
         word-wrap: break-word;
         z-index: -1;
+        font-size: 100%;
     }
     .hot-item:hover{
         cursor: pointer;

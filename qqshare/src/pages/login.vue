@@ -38,6 +38,7 @@
       login () {
         const self = this
         //console.log('login',typeof(self),typeof(this))
+        this.GLOBAL.user_id = this.form.id;
         if(this.form.id == '' || this.form.pwd == '') {
           this.$message.error("用户名或密码为空!!!")
         }
