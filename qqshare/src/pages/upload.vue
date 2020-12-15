@@ -16,8 +16,6 @@
                         :auto-upload = "false"
                         :limit="1"
                         :on-exceed="handleExceed"
-                        :on-progress="handleProcess"
-                        :on-success="handleSuccess"
                         :on-error="handleError"
                         :on-change="handleChange"
                         :on-remove="handleRemove"
@@ -26,20 +24,20 @@
                         <i class="el-icon-upload"></i>
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                     </el-upload>
-                    <el-button style="margin-top:0.1rem"  type="success" @click="submitUpload">确认上传</el-button>
-                    <el-progress style="margin-top:0.1rem"  v-if="beginUpload == true" :text-inside="true" :stroke-width="18"
-                    :percentage="uploadPercent"></el-progress>
+                    <el-button style="margin-top:2%"  type="success" @click="submitUpload">确认上传</el-button>
+                    <!--<el-progress style="margin-top:0.1rem"  v-if="beginUpload == true" :text-inside="true" :stroke-width="18"
+                    :percentage="uploadPercent"></el-progress>-->
                 </div>
                 <div class='right'>
-                    <el-form :model="form">
+                    <el-form :model="form" style="width:100%">
                         <el-form-item label= "课程名字">
-                            <el-input style="width:2.5rem" v-model="form.course" placeholder="必填"></el-input>
+                            <el-input style="width:80%" v-model="form.course" placeholder="必填"></el-input>
                         </el-form-item>
                         <el-form-item label = "授课老师">
-                            <el-input style="width:2.5rem" v-model="form.teacher" placeholder="必填"></el-input>
+                            <el-input style="width:80%" v-model="form.teacher" placeholder="必填"></el-input>
                         </el-form-item>
                         <el-form-item label = "其它描述">
-                            <el-input style="width:2.5rem" v-model="form.description" placeholder="选填，有关描述信息"></el-input>
+                            <el-input style="width:80%" v-model="form.description" placeholder="选填，有关描述信息"></el-input>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -82,130 +80,102 @@ export default {
     data(){
         return{
           cur: 0,
-          fileList:[],
           upload_num: 0,
-          beginUpload: false,
-          uploadPercent: 0,
+          //beginUpload: false,
           form: {
           course: '',
           teacher: '',
           description: ''
           },
-          upload_file_record:[
-            {
-                    filename:"组合数学2020期末A1",
-                    downloadtime:12,
-                    uploadtime: "2020-12-10",
-                },
-                {
-                    filename:"组合数学2017期末A2我觉得很无聊",
-                    downloadtime:19,
-                    uploadtime: "2017-12-18",
-                },
-                {
-                    filename:"高等计算机网络课件",
-                    downloadtime:29,
-                    uploadtime: "2020-11-11",
-                },
-                {
-                    filename:"微积分A2020期末答案",
-                    downloadtime:129,
-                    uploadtime: "2020-10-11",
-                },
-                {
-                    filename:"毛概展示PPT",
-                    downloadtime:9,
-                    uploadtime: "2014-12-11",
-                },
-                {
-                    filename:"高等计算机网络项目1",
-                    downloadtime:39,
-                    uploadtime: "2020-11-18",
-                },
-                {
-                    filename:"高等计算机网络项目2",
-                    downloadtime:12,
-                    uploadtime: "2020-11-18",
-                },
-            ],
+          upload_file_record:[],
+          file_List:[],
+          fileList:[],
+          magnetURI:"",
         }
     },
     methods:{
         chooseup(){
             this.cur = 0;
         },
-        uploadrecord(){
+        async uploadrecord(){
+            const self = this;
             this.cur = 1;
+            self.upload_file_record = [];
+            await this.axios.get("/uploadrecord",{params:{id:this.GLOBAL.user_id}}).then(function (response){
+                //console.log(response)
+                self.upload_num = response.data.length;
+                //console.log(response.data.length);
+                for(let _file of response.data){
+                  //console.log(_file,self.res);
+                  self.upload_file_record.push(_file);
+                }
+              }).catch(function(error){console.log(error)});
         },
         beforeRemove(file,fileList){
-            return this.$confirm('确定移除'+file.name+'?');
+            return this.$confirm('确定取消上传文件'+file.name+'吗?', '提示', {
+                   confirmButtonText: '确定',
+                   cancelButtonText: '取消',
+                   type: 'warning'
+                  }); 
         },
         handleExceed(file,fileList){
+            console.log(fileList.length);
             this.$message.warning("最多一次上传1个文件，请分多次上传");
-        },
-        handleSuccess(response, file, fileList){
-            console.log(response)
-            this.$message.success('文件[' + file.name + ']上传成功')
         },
         handleError(err, file, fileList){
             console.log(err);
             this.$message.error("文件上传失败")
         },
         handleRemove(file,fileList){
-            console.log(file)
-            this.fileList = []
+            console.log(file);
+            this.file_List = [];
         },
         handleChange(file,fileList){
             if(file){
-                this.fileList = fileList.slice(-3);
                 console.log('Upload file '+ file.name);
+                console.log(this.form,this.file_List);
+                this.file_List.push(file);
+                //fileList.push(file.name);
             }
         },
-        handleProcess(event, file, fileList){
-            console.log("process bar")
-            this.beginUpload = true;
-            this.uploadPercent = file.percentage.toFixed(0);
-        },
-        uploadFile(param){
-            console.log(param.file.name)
-            const fileObj = param.file
-            const formData = new FormData()
-            formData.append('file',fileObj)
-            formData.append('filename',param.file.name)
-            formData.append('course',this.form.course)
-            formData.append('teacher',this.form.teacher)
-            formData.append('description',this.form.description)
-            console.log(formData.get('teacher'))
-            //请求后台上传数据
-            this.$http.post('',formData
-            ).then(res => {
-                console.log(res)
-                if(res.data.meta.status == '200'){
-                    this.$message.success(res.data.meta.msg)
-                    this.fileList = []
-                    this.form.teacher = ""
-                    this.form.course = ""
-                    this.form.description = ""
-                }else{
-                    this.$message.error(res.data.meta.msg)
-                }
-            },err => {
-                console.log(err)
-                this.$message.error("上传文件有问题，请检查重传")
-            })
-            //this.beginUpload = false//之后进度条真正使用的时候需要改回来
-        },
         submitUpload(){
-            if(this.fileList.length == 0){ this.$message.warning("请选择一个文件")}
+            //console.log(this.file)
+            //console.log(this.)
+            const self = this;
+           // console.log(this.file_List,this.file_List[0]);
+           let upfile = this.file_List[0];
+            if(this.file_List.length == 0){ this.$message.warning("请选择一个文件")}
             else if(this.form.course == ''){ this.$message.warning("请输入对应课程")}
             else if(this.form.teacher == ''){ this.$message.warning("请输入授课教师")}
             else{
-                //this.$refs.upload.submit()
-                //console.log(client);
-                //console.log(this.file);
-                client.seed(this.file.raw, function (torrent) {
-                console.log('Client is seeding ' + torrent.magnetURI)
-            });
+                client.seed(upfile.raw, function (torrent) {
+                    console.log('Client is seeding ' + torrent.magnetURI);
+                    self.magnetURI = torrent.magnetURI;
+                    console.log("123",self.magnetURI);
+                    self.axios.post('/upload',qs.stringify({
+                        id:self.GLOBAL.user_id,
+                        filename:upfile.name.slice(0,upfile.name.lastIndexOf('.')), 
+                        course:self.form.course, 
+                        teacher:self.form.teacher,
+                        fileformat:upfile.name.slice(upfile.name.lastIndexOf('.')),
+                        filesize:upfile.size,
+                        description:self.form.description,
+                        magnetURI:self.magnetURI,
+                    })).then(function (response){
+                        let flag = ""+response.data['flag'];
+                        if(flag == 1){
+                            self.$message.success(upfile.name + "上传成功！");
+                            self.file_List = [];
+                            self.fileList = [];
+                            self.form.description = "";
+                            self.form.teacher = "";
+                            self.form.course = "";
+                        }
+                        else{
+                            self.$message.warning(upfile.name + "上传失败！")
+                        }
+                    }).catch(function(error){console.log(error)});
+                });
             }
         }
     },
@@ -219,7 +189,7 @@ export default {
 
 <style scoped>
     .demo-home{
-      font-size: 20px;
+      font-size: 180%;
       align-content: flex-start;
       margin-right: 5%;
     }
@@ -227,7 +197,7 @@ export default {
     border-radius: 4px;
     color:black;
     float: none;
-    font-size: 20px;
+    font-size: 180%;
     cursor:pointer;
   }
   .tab-tilte{
@@ -255,16 +225,16 @@ export default {
     .chooseup{
         margin-top: 5%;
         margin-left: 5%;
-        width:5rem;
+        width:60%;
     }
     .left{
         float: left;
-        width:2rem;
+        width:40%;
         margin-right: 0;
     }
     .right{
         float: right;
         margin-left: 0;
-        width:3rem;
+        width:55%;
     }
 </style>

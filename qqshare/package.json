@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.21.0",
     "element-ui": "^2.14.1",
+    "express": "^4.17.1",
     "lib-flexible": "^0.3.2",
     "qs": "^6.9.4",
     "simple-peer": "^9.9.3",
