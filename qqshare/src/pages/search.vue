@@ -156,8 +156,28 @@ export default {
           return this.format(value, i - 1);
         },
         download: function(item){
+          if (item.magnetURI==undefined) {
+            this.$message.warning("下载文件的磁力链接不存在！");
+            return;
+          }
           console.log(`Start to download file ${item.filename} `);
           this.$message.success("已将文件"+item.filename+"添加到下载列表");
+          //const self = this;
+           this.axios.post('/download',qs.stringify({
+              id: this.GLOBAL.user_id,
+               downloadfileurl: item.magnetURI,
+             })
+           ).then(function (response){
+             let flag = response.data['flag'];
+             if (flag == '1'){
+               //console.log(typeof(self));
+               console.log("已将下载记录上传至服务器！");
+             }
+             else if(flag == '0'){
+               console.log("下载记录上传至服务器失败！");
+             }
+           })
+           .catch(function(error){console.log(error)});
           console.log(item.magnetURI);
           let torrent = client.add(item.magnetURI, {path: 'D:/user/Downloads/'}, this.onTorrent);
           console.log(torrent);
