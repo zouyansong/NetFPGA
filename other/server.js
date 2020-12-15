@@ -3,10 +3,10 @@ const url = require("url");
 const path = require("path");
 const fs = require("fs");
 const querystring = require('querystring');
-const mysql = require('mysql');
+//const mysql = require('mysql');
 
-const { findUser,findById,saveUser,deleteById } = require('./db/user.js')
-const { pool } = require('./db/pool');
+//const { findUser,findById,saveUser,deleteById } = require('./db/user.js')
+//const { pool } = require('./db/pool');
 const port = 8081;
 
 const server = http.createServer((req, res) => {
@@ -76,6 +76,138 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify(resData));
         return;
 	}
+	
+	if (pathname === '/api/upload'){
+		console.log(urlObject);
+		let postData = "";
+			req.on("data", (chunk) => {
+				postData = postData + chunk;
+			});
+			req.on("end", () => {
+				postData = querystring.parse(postData);
+				console.log(postData);
+				console.log(postData.filename);
+				resData = {};
+				if (postData.filename.length > 6){resData['flag']=1}
+				else{resData['flag']=0}
+				res.setHeader("Content-Type", "application/json");
+				res.end(JSON.stringify(resData));
+				return;
+			});
+	}
+	
+	if (pathname === '/api/changename'){
+		console.log(urlObject);
+		let postData = "";
+			req.on("data", (chunk) => {
+				postData = postData + chunk;
+			});
+			req.on("end", () => {
+				postData = querystring.parse(postData);
+				console.log(postData);
+				console.log(postData['id']);
+				resData = {};
+				if(postData['newname'].length >= 3){resData['flag']=1}
+				else {resData['flag']=0}
+				res.setHeader("Content-Type", "application/json");
+				res.end(JSON.stringify(resData));
+				return;
+			});
+					
+	}
+	
+	if (pathname === '/api/download'){
+		console.log(urlObject);
+		let postData = "";
+			req.on("data", (chunk) => {
+				postData = postData + chunk;
+			});
+			req.on("end", () => {
+				postData = querystring.parse(postData);
+				console.log(postData);
+				resData={};
+				if(postData['downloadfileurl'].length > 10){
+					resData['flag']=1;
+				}
+				else resData['flag']=0;
+				res.setHeader("Content-Type", "application/json");
+				res.end(JSON.stringify(resData));
+				return;
+			});
+	}
+	
+	if (pathname === '/api/uploadrecord'){
+		console.log(urlObject);
+		const resData = [{
+                    filename:"高等计算机网络项目3",
+                    downloadtime:32,
+                    uploadtime: "2020-11-19",
+                },
+                {
+                    filename:"高等计算机网络项目4",
+                    downloadtime:15,
+                    uploadtime: "2018-11-18",
+                },
+                {
+                    filename:"高等计算机网络项目10",
+                    downloadtime:18,
+                    uploadtime: "2020-11-13",
+                },
+                {
+                    filename:"高等计算机网络报告",
+                    downloadtime:4,
+                    uploadtime: "2020-11-20",
+                }];
+		res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(resData));
+        return;
+				
+	}
+	
+	if (pathname === '/api/downloadrecord'){
+		console.log(urlObject);
+		const resData=[
+            {
+                    filename:"组合数学2020期末A1",
+                    downloadtime:12,
+                    uploadtime: "2020-12-10",
+                },
+                {
+                    filename:"组合数学2017期末A2我觉得很无聊",
+                    downloadtime:19,
+                    uploadtime: "2017-12-18",
+                },
+                {
+                    filename:"高等计算机网络课件",
+                    downloadtime:29,
+                    uploadtime: "2020-11-11",
+                },
+                {
+                    filename:"微积分A2020期末答案",
+                    downloadtime:129,
+                    uploadtime: "2020-10-11",
+                },
+                {
+                    filename:"毛概展示PPT",
+                    downloadtime:9,
+                    uploadtime: "2014-12-11",
+                },
+                {
+                    filename:"高等计算机网络项目1",
+                    downloadtime:39,
+                    uploadtime: "2020-11-18",
+                },
+                {
+                    filename:"高等计算机网络项目2",
+                    downloadtime:12,
+                    uploadtime: "2020-11-18",
+                }
+            ];
+		res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(resData));
+        return;	
+	}
+	
 	
 	if (pathname === '/api/search'){
 			console.log(urlObject);
