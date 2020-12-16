@@ -12,8 +12,8 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/api': {
-                //target: 'http://127.0.0.1:8081/api',
-                target: "http://407s2.dns.navy:8082/api",
+                target: 'http://127.0.0.1:8081/api',
+                //target: "http://407s2.dns.navy:8082/api",
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''
