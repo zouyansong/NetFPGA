@@ -90,6 +90,7 @@ export default {
             if(this.$route.query[key] != '')
               this.query_mode += key + ":" + this.$route.query[key] + " ";
           }
+          self.res = [];
           //发送请求，得到response
           await this.axios.get("/search",{params:q}).then(function (response){
                 //console.log(response)
@@ -164,7 +165,7 @@ export default {
           this.$message.success("已将文件"+item.filename+"添加到下载列表");
           //const self = this;
            this.axios.post('/download',qs.stringify({
-              id: this.GLOBAL.user_id,
+              id: sessionStorage.getItem("user_id"),
                magnetURI: item.magnetURI,
              })
            ).then(function (response){
@@ -193,6 +194,11 @@ export default {
             remaining: torrent.timeRemaining
           });
           */
+         //console.log(sessionStorage.getItem("downTorrents"));
+         //var t = sessionStorage.getItem("downTorrents");
+         //t.push(torrent);
+         //sessionStorage.setItem("downTorrents",t);
+         //console.log(sessionStorage.getItem("downTorrents"));
           this.downTorrents.push(torrent);
         },
         onTorrent: function(torrent) {

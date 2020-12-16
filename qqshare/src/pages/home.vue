@@ -64,7 +64,7 @@ export default {
             }
             const self = this;
             this.axios.post('/changename',qs.stringify({
-               id: self.GLOBAL.user_id,
+               id: sessionStorage.getItem("user_id"),
                newname: self.form_set.name,
              })
            ).then(function (response){
@@ -72,9 +72,10 @@ export default {
                if(flag == '1'){
                    //console.log("before",self.GLOBAL.user_name);
                    self.$message.success("修改成功")
-                   Vue.set(self.GLOBAL,'user_name',self.form_set.name);
-                   console.log(self.GLOBAL.user_name);
-                   document.getElementById("name").innerHTML='<i class="el-icon-user-solid"></i>&nbsp;'+self.GLOBAL.user_name;
+                   //Vue.set(self.GLOBAL,'user_name',self.form_set.name);
+                   sessionStorage.setItem("user_name",self.form_set.name);
+                   //console.log(self.GLOBAL.user_name);
+                   document.getElementById("name").innerHTML='<i class="el-icon-user-solid"></i>&nbsp;'+self.form_set.name;
                    self.form_set.name = "";
                    self.dialogVisible = false;
                    //console.log("after",self.GLOBAL.user_name);

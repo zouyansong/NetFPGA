@@ -38,7 +38,7 @@
       login () {
         const self = this
         //console.log('login',typeof(self),typeof(this))
-        this.GLOBAL.user_id = this.form.id;
+        //this.GLOBAL.user_id = this.form.id;
         if(this.form.id == '' || this.form.pwd == '') {
           this.$message.error("用户名或密码为空!!!")
         }
@@ -60,7 +60,11 @@
              console.log(response.data['flag']);
              if (flag === '1'){
                //console.log(typeof(self));
-               self.GLOBAL.user_name = response.data['name'];
+               //self.GLOBAL.user_name = response.data['name'];
+               sessionStorage.setItem("user_id",self.form.id);
+               sessionStorage.setItem("user_name",response.data['name']);
+               sessionStorage.setItem("downTorrents",[]);
+               //console.log(sessionStorage.getItem("downTorrents"));
                self.$router.push('/home');
              }
              else if(flag === '2'){
@@ -90,7 +94,7 @@
   .loginForm {
     width: 60%;
     min-width: 300px;
-    padding: 52px 30px 30px 30px;
+    padding: 30px 30px 30px 30px;
     background-color: #fff;
     box-shadow: 10px 10px 5px #888888;
     text-align: center;

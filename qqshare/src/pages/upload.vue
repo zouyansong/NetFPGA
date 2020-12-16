@@ -101,7 +101,7 @@ export default {
             const self = this;
             this.cur = 1;
             self.upload_file_record = [];
-            await this.axios.get("/uploadrecord",{params:{id:this.GLOBAL.user_id}}).then(function (response){
+            await this.axios.get("/uploadrecord",{params:{id:sessionStorage.getItem("user_id")}}).then(function (response){
                 //console.log(response)
                 self.upload_num = response.data.length;
                 //console.log(response.data.length);
@@ -153,7 +153,7 @@ export default {
                     self.magnetURI = torrent.magnetURI;
                     console.log("123",self.magnetURI);
                     self.axios.post('/upload',qs.stringify({
-                        id:self.GLOBAL.user_id,
+                        id:sessionStorage.getItem("user_id"),
                         filename:upfile.name.slice(0,upfile.name.lastIndexOf('.')), 
                         course:self.form.course, 
                         teacher:self.form.teacher,

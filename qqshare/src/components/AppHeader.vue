@@ -3,7 +3,7 @@
         <el-row>
             <el-col :span="15"><div class="grid-content1">清清共享</div></el-col>
             <el-col :span="4"><div class="grid-content2" style="float:right" id ="name" @newname='change()'> <i class="el-icon-user-solid"></i>
-            &nbsp;{{this.GLOBAL.user_name}}</div></el-col>
+            &nbsp;{{user_name}}</div></el-col>
             <el-col :span="2"><div class="grid-content2" style="float:right" id ="setting"  @click="dosomething()">
                 <i class="el-icon-setting"></i>&nbsp;设置</div></el-col>
             <el-col :span="3"><div class="grid-content2" id = "quit" @click="safequit()">
@@ -17,9 +17,12 @@
 export default {
     data(){
         return{
-
+          user_name:"",
         }
         //dialogVisible:false,
+    },
+    mounted(){
+      this.user_name = sessionStorage.getItem("user_name");
     },
     methods:{
         dosomething () {
@@ -37,7 +40,8 @@ export default {
                        type: 'success',
                        message: '退出成功!'
                      });
-                     this.$router.push('/login')
+                     sessionStorage.clear();//清除缓存
+                     this.$router.push('/login');
 
                 }).catch();          
         }

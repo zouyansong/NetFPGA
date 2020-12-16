@@ -69,7 +69,7 @@ export default {
             const self = this;
             this.cur = 1;
             self.download_file_record = [];
-            await this.axios.get("/downloadrecord",{params:{id:this.GLOBAL.user_id}}).then(function (response){
+            await this.axios.get("/downloadrecord",{params:{id:sessionStorage.getItem("user_id")}}).then(function (response){
                 //console.log(response)
                 self.download_num = response.data.length;
                 //console.log(response.data.length);
@@ -82,6 +82,9 @@ export default {
     },
     computed:{
         downloadInfo: function(){
+            //console.log(sessionStorage.getItem("downTorrents"));
+            //var down_torrents = JSON.parse(sessionStorage.getItem("downTorrents"));
+            //console.log(down_torrents);
             let info =  '<div>您正在下载' + this.downTorrents.length + '个文件</div></br></br>';
             //info += '<ul>';\
             var index = 1;
